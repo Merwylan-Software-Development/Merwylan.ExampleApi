@@ -17,5 +17,6 @@ namespace Merwylan.ExampleApi.Persistence.Entities
         public DateTime Revoked { get; set; }
         public string? RevokedByIp { get; set; }
         public string? ReplacedByToken { get; set; }
+        public User User { get; set; } = null!;
     }
 }

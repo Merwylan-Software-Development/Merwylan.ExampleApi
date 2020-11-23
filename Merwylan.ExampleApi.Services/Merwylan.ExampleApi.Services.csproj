@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="10.1.1" />
+    <PackageReference Include="BCrypt.Net-Next" Version="4.0.0" />
+    <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="6.8.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Merwylan.ExampleApi.Persistence\Merwylan.ExampleApi.Persistence.csproj" />
+    <ProjectReference Include="..\Merwylan.ExampleApi.Shared\Merwylan.ExampleApi.Shared.csproj" />
+  </ItemGroup>
+</Project>
