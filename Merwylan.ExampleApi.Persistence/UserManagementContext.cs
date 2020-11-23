@@ -11,8 +11,6 @@ namespace Merwylan.ExampleApi.Persistence
             new Action { Id = 2, Value = "users-add" },
             new Action { Id = 3, Value = "users-update" },
             new Action { Id = 4, Value = "users-delete" },
-            new Action { Id = 5, Value = "tomtom-view" },
-            new Action {Id = 6, Value = "tomtom-edit"}
         };
 
         private static readonly Role[] _rolesSeeds =
