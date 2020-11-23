@@ -13,7 +13,7 @@ namespace Merwylan.ExampleApi.Services.Extensions
                 Id = user.Id,
                 Username = user.Username,
                 HashedPassword = user.HashedPassword,
-                RefreshTokens = user.RefreshTokens is null ? new RefreshTokenDto[0] : user.RefreshTokens.Select(ToDto).ToArray(),
+                RefreshTokens = user.RefreshTokens?.Select(ToDto).ToArray() ?? new RefreshTokenDto[0],
                 AuthorizedActions = user.Roles?
                                         .SelectMany(userRole => userRole.Actions)
                                         .Select(action => new ActionDto(){Name = action.Value})
