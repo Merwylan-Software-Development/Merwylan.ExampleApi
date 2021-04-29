@@ -14,6 +14,7 @@ namespace Merwylan.ExampleApi.Services.Extensions
                 Username = user.Username,
                 HashedPassword = user.HashedPassword,
                 RefreshTokens = user.RefreshTokens?.Select(ToDto).ToArray() ?? new RefreshTokenDto[0],
+                Roles = user.Roles.Select(x => new RoleDto { Name = x.Name }).ToArray(),
                 AuthorizedActions = user.Roles?
                                         .SelectMany(userRole => userRole.Actions)
                                         .Select(action => new ActionDto(){Name = action.Value})

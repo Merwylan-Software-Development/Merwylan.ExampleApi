@@ -54,8 +54,7 @@ namespace Merwylan.ExampleApi.Persistence
                 .HasMany(u => u.RefreshTokens)
                 .WithOne(r => r.User);
 
-            modelBuilder.Entity<Role>().HasData(_rolesSeeds);
-            modelBuilder.Entity<User>().HasData(_usersSeeds);
+            //modelBuilder.Entity<User>().HasData(_usersSeeds);
         }
     }
 }

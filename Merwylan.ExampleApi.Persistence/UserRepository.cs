@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Merwylan.ExampleApi.Persistence.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace Merwylan.ExampleApi.Persistence
 {
@@ -16,7 +17,7 @@ namespace Merwylan.ExampleApi.Persistence
 
         public IEnumerable<User> GetAllUsers()
         {
-            return _context.Users;
+            return _context.Users.Include(x=>x.Roles).ThenInclude(x=>x.Actions);
         }
 
         public User? GetUserById(int id)

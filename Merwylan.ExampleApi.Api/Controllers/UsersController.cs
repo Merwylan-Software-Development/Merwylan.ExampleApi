@@ -13,7 +13,7 @@ namespace Merwylan.ExampleApi.Api.Controllers
 {
     [Authorize]
     [ApiController]
-    [Route("[controller]")]
+    [Route(Program.API_PREFIX + "[controller]")]
     public class UsersController : ExampleControllerBase
     {
         private readonly IUserService _userService;
@@ -32,6 +32,7 @@ namespace Merwylan.ExampleApi.Api.Controllers
             try
             {
                 var response = await _userService.AuthenticateAsync(model, IpAddress());
+
                 if (response == null)
                     return BadRequest(new {message = "Username or password is incorrect"});
 
@@ -219,6 +220,7 @@ namespace Merwylan.ExampleApi.Api.Controllers
                 HttpOnly = true,
                 Expires = DateTime.UtcNow.AddDays(7)
             };
+
             Response.Cookies.Append("refreshToken", token, cookieOptions);
         }
 

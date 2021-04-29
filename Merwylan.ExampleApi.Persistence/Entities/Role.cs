@@ -6,6 +6,13 @@ namespace Merwylan.ExampleApi.Persistence.Entities
 {
     public class Role
     {
+
+        public Role()
+        {
+            this.Actions= new HashSet<Action>();
+            this.Users= new HashSet<User>();
+        }
+
         [Key]
         public int Id { get; set; }
 
