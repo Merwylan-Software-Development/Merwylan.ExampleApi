@@ -7,7 +7,7 @@ namespace Merwylan.ExampleApi.Persistence
     {
         public static void ConfigurePersistenceServices(this IServiceCollection collection, string connectionString)
         {
-            collection.AddDbContext<UserManagementContext>(options => options.UseSqlServer(connectionString));
+            collection.AddDbContext<ExampleContext>(options => options.UseSqlServer(connectionString));
             collection.AddScoped<IUserRepository, UserRepository>();
         }
     }

@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Merwylan.ExampleApi.Persistence 
 { 
-    public class UserManagementContext : DbContext
+    public class ExampleContext : DbContext
     {
         private static readonly Action[] _actionsSeeds =
         {
@@ -33,12 +33,13 @@ namespace Merwylan.ExampleApi.Persistence
             }
         };
 
-        public UserManagementContext(DbContextOptions<UserManagementContext> options) : base(options) { }
+        public ExampleContext(DbContextOptions<ExampleContext> options) : base(options) { }
 
         public DbSet<Action> Actions { get; set; } = null!;
         public DbSet<RefreshToken> RefreshTokens { get; set; } = null!;
         public DbSet<Role> Roles { get; set; } = null!;
         public DbSet<User> Users { get; set; } = null!;
+        public DbSet<AuditTrail> AuditTrails { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

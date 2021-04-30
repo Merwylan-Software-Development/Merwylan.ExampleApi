@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Merwylan.ExampleApi.Persistence.Migrations
 {
-    [DbContext(typeof(UserManagementContext))]
+    [DbContext(typeof(ExampleContext))]
     partial class UserManagementContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)

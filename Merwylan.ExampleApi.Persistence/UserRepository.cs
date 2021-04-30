@@ -8,9 +8,9 @@ namespace Merwylan.ExampleApi.Persistence
 {
     public class UserRepository : IUserRepository
     {
-        private readonly UserManagementContext _context;
+        private readonly ExampleContext _context;
 
-        public UserRepository(UserManagementContext context)
+        public UserRepository(ExampleContext context)
         {
             _context = context;
         }
@@ -22,17 +22,20 @@ namespace Merwylan.ExampleApi.Persistence
 
         public User? GetUserById(int id)
         {
-            return _context.Users?.FirstOrDefault(user => user.Id == id);
+            return _context.Users
+                .Include(x => x.Roles)
+                .ThenInclude(x => x.Actions)
+                .FirstOrDefault(user => user.Id == id);
         }
 
         public User? GetUserByName(string userName)
         {
-            return _context.Users?.FirstOrDefault(user => user.Username == userName);
+            return _context.Users.FirstOrDefault(user => user.Username == userName);
         }
 
         public User? GetUserByRefreshToken(string refreshToken)
         {
-            return _context.Users?.FirstOrDefault(user => user.RefreshTokens.Select(r => r.Token).Contains(refreshToken));
+            return _context.Users.FirstOrDefault(user => user.RefreshTokens.Select(r => r.Token).Contains(refreshToken));
         }
 
         public async Task<User> AddUserAsync(User user)
@@ -43,7 +46,7 @@ namespace Merwylan.ExampleApi.Persistence
 
         public void AddRefreshToken(int userId, RefreshToken refreshToken)
         {
-            _context.Users?.FirstOrDefault(user => userId == user.Id)?.RefreshTokens?.Add(refreshToken);
+            _context.Users.FirstOrDefault(user => userId == user.Id)?.RefreshTokens.Add(refreshToken);
         }
 
         public void UpdateUser(User user)

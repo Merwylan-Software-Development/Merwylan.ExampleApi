@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Merwylan.ExampleApi.Persistence.Migrations
 {
-    [DbContext(typeof(UserManagementContext))]
+    [DbContext(typeof(ExampleContext))]
     [Migration("20201125192723_v1")]
     partial class v1
     {

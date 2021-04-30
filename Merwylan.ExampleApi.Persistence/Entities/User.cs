@@ -15,8 +15,8 @@ namespace Merwylan.ExampleApi.Persistence.Entities
         [NotNull] 
         public string HashedPassword { get; set; } = null!;
 
-        public virtual ICollection<Role> Roles { get; set; } = null!;
+        public virtual ICollection<Role> Roles { get; set; } = new List<Role>();
 
-        public virtual ICollection<RefreshToken> RefreshTokens { get; set; } = null!;
+        public virtual ICollection<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>();
     }
 }

@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Linq;
 using System.Security.Authentication;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Merwylan.ExampleApi.Services;
 using Merwylan.ExampleApi.Shared.Auth;
+using Merwylan.ExampleApi.Shared.Extensions;
 using Merwylan.ExampleApi.Shared.UserManagement;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -16,12 +19,10 @@ namespace Merwylan.ExampleApi.Api.Controllers
     [Route(Program.API_PREFIX + "[controller]")]
     public class UsersController : ExampleControllerBase
     {
-        private readonly IUserService _userService;
         private readonly ILogger<UsersController> _logger;
 
-        public UsersController(IUserService userService, ILogger<UsersController> logger)
+        public UsersController(IUserService userService, ILogger<UsersController> logger) :base(userService)
         {
-            _userService = userService;
             _logger = logger;
         }
 
@@ -31,10 +32,10 @@ namespace Merwylan.ExampleApi.Api.Controllers
         {
             try
             {
-                var response = await _userService.AuthenticateAsync(model, IpAddress());
+                var response = await UserService.AuthenticateAsync(model, IpAddress());
 
                 if (response == null)
-                    return BadRequest(new {message = "Username or password is incorrect"});
+                    return BadRequest();
 
                 SetTokenCookie(response.RefreshToken);
 
@@ -42,11 +43,11 @@ namespace Merwylan.ExampleApi.Api.Controllers
             }
             catch (UserDoesNotExistException)
             {
-                return Unauthorized();
+                return BadRequest();
             }
             catch (AuthenticationException)
             {
-                return Unauthorized();
+                return BadRequest();
             }
         }
 
@@ -59,10 +60,10 @@ namespace Merwylan.ExampleApi.Api.Controllers
 
             try
             {
-                var response = await _userService.RefreshTokenAsync(refreshToken, IpAddress());
+                var response = await UserService.RefreshTokenAsync(refreshToken, IpAddress());
 
                 if (response == null)
-                    return Unauthorized(new {message = "Invalid token"});
+                    return Unauthorized();
 
                 SetTokenCookie(response.RefreshToken);
 
@@ -79,18 +80,26 @@ namespace Merwylan.ExampleApi.Api.Controllers
         {
             try
             {
-                // We also accept the token from the cookies (yuummiiie!!)
                 var token = model.Token ?? Request.Cookies["refreshToken"];
 
                 if (string.IsNullOrEmpty(token))
-                    return BadRequest(new {message = "Token is required"});
+                    return BadRequest();
 
-                var response = await _userService.RevokeTokenAsync(token, IpAddress());
+                if (!AuthenticatedUser.HasClaim(Actions.RevokeTokens))
+                {
+                    return Unauthorized();
+                }
+
+                var response = await UserService.RevokeTokenAsync(token, IpAddress());
 
                 if (!response)
-                    return NotFound(new {message = "Token not found"});
+                    return NotFound();
 
-                return Ok(new {message = "Token revoked"});
+                return Ok();
+            }
+            catch (AuthenticationException)
+            {
+                return Unauthorized();
             }
             catch (Exception e)
             {
@@ -104,7 +113,12 @@ namespace Merwylan.ExampleApi.Api.Controllers
         {
             try
             {
-                var users = _userService.GetAllUsers();
+                if (!AuthenticatedUser.HasClaim(Actions.ViewUsers))
+                {
+                    return Unauthorized();
+                }
+
+                var users = UserService.GetAllUsers();
                 return Ok(users);
             }
             catch (Exception e)
@@ -119,7 +133,12 @@ namespace Merwylan.ExampleApi.Api.Controllers
         {
             try
             {
-                var user = _userService.GetUserById(id);
+                if (!AuthenticatedUser.HasClaim(Actions.ViewUsers))
+                {
+                    return Unauthorized();
+                }
+
+                var user = UserService.GetUserById(id);
                 return Ok(user);
             }
             catch (UserDoesNotExistException)
@@ -134,12 +153,16 @@ namespace Merwylan.ExampleApi.Api.Controllers
         }
 
         [HttpPost]
-        [AllowAnonymous]
         public async Task<IActionResult> AddUserAsync(PostUser user)
         {
             try
             {
-                return Ok(await _userService.AddUserAsync(user));
+                if (!AuthenticatedUser.HasClaim(Actions.AddUsers))
+                {
+                    return Unauthorized();
+                }
+
+                return Ok(await UserService.AddUserAsync(user));
             }
             catch (UserAlreadyExistsException)
             {
@@ -157,7 +180,12 @@ namespace Merwylan.ExampleApi.Api.Controllers
         {
             try
             {
-                await _userService.EditUserAsync(user);
+                if (!AuthenticatedUser.HasClaim(Actions.EditUsers))
+                {
+                    return Unauthorized();
+                }
+
+                await UserService.EditUserAsync(user);
                 return Ok();
             }
             catch (UserDoesNotExistException)
@@ -176,11 +204,16 @@ namespace Merwylan.ExampleApi.Api.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteUserAsync(int id)
+        public async Task<IActionResult> DeleteUserByIdAsync(int id)
         {
             try
             {
-                await _userService.DeleteUserAsync(id);
+                if (!AuthenticatedUser.HasClaim(Actions.DeleteUsers))
+                {
+                    return Unauthorized();
+                }
+
+                await UserService.DeleteUserAsync(id);
                 return Ok();
             }
             catch (UserDoesNotExistException)
@@ -195,11 +228,16 @@ namespace Merwylan.ExampleApi.Api.Controllers
         }
 
         [HttpGet("{id}/refresh-tokens")]
-        public IActionResult GetRefreshTokens(int id)
+        public IActionResult GetRefreshTokensById(int id)
         {
             try
             {
-                var user = _userService.GetUserById(id);
+                if (!AuthenticatedUser.HasClaim(Actions.ViewRefreshTokens))
+                {
+                    return Unauthorized();
+                }
+
+                var user = UserService.GetUserById(id);
                 return Ok(user.RefreshTokens);
             }
             catch (UserDoesNotExistException)

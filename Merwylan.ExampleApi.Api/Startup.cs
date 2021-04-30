@@ -54,11 +54,10 @@ namespace Merwylan.ExampleApi.Api
                     ClockSkew = TimeSpan.Zero
                 };
             });
-            services.AddAuthorization(options =>
-            {
-              // options.AddPolicy("user-management", policy => policy.Requirements.Add());
-            });
+
             services.ConfigurePersistenceServices(ConfigurationManager.ConnectionStrings["database"].ConnectionString);
+
+            services.AddSwaggerGen();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -69,10 +68,15 @@ namespace Merwylan.ExampleApi.Api
                 app.UseDeveloperExceptionPage();
             }
 
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Merwylan Example API V1");
+            });
+            
             app.UseHttpsRedirection();
 
             app.UseRouting();
-
             app.UseCors(x => x
                 .SetIsOriginAllowed(origin => true)
                 .AllowAnyMethod()
