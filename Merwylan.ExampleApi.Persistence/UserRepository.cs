@@ -56,15 +56,15 @@ namespace Merwylan.ExampleApi.Persistence
 
         public void UpdateRefreshToken(int userId, RefreshToken refreshToken)
         {
-            _context.Users?.FirstOrDefault(user => userId == user.Id)?.RefreshTokens?.Add(refreshToken);
+            _context.Users.FirstOrDefault(user => userId == user.Id)?.RefreshTokens?.Add(refreshToken);
         }
         
         public void DeleteUser(int id)
         {
-            var userToDelete = _context.Users?.FirstOrDefault(user => user.Id == id);
+            var userToDelete = _context.Users.FirstOrDefault(user => user.Id == id);
 
             if(userToDelete != default)
-                _context.Users?.Remove(userToDelete);
+                _context.Users.Remove(userToDelete);
         }
 
         public async Task SaveAsync()

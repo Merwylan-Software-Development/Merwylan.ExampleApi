@@ -1,6 +1,7 @@
 using System;
 using System.Configuration;
 using System.Text;
+using Merwylan.ExampleApi.Mail;
 using Merwylan.ExampleApi.Persistence;
 using Merwylan.ExampleApi.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -9,7 +10,9 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
+using NLog.Extensions.Logging;
 
 namespace Merwylan.ExampleApi.Api
 {
@@ -25,16 +28,44 @@ namespace Merwylan.ExampleApi.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddHsts(options =>
+            {
+                options.Preload = true;
+                options.IncludeSubDomains = true;
+                options.MaxAge = TimeSpan.FromDays(60);
+            });
 
-            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(
+                    builder =>
+                    {
+                        builder.WithOrigins("https://merwylan.nl", "https://www.merwylan.com");
+                    });
+            });
+
+            services.Configure<IISServerOptions>(options => options.AutomaticAuthentication = false);
+            services.AddControllers()
+                .AddJsonOptions(options => options.JsonSerializerOptions.IgnoreNullValues = true);
+
+            services.AddLogging(x =>
+            {
+                x.AddConsole();
+                x.AddNLog();
+            });
+
+            services.ConfigureMailServices(new MailConfig
+            {
+                Port = int.Parse(ConfigurationManager.AppSettings["mailPort"]),
+                Sender = ConfigurationManager.AppSettings["mailSender"],
+                SmtpServer = ConfigurationManager.AppSettings["smtpServer"],
+                Recipients = ConfigurationManager.AppSettings["mailRecipients"],
+                SenderPassword = ConfigurationManager.AppSettings["mailPassword"]
+            });
+
             var securityKey = Encoding.ASCII.GetBytes(ConfigurationManager.AppSettings["securityKey"]);
-
-            services.AddControllers();
-            services.AddAuthentication();
-
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IUserService>(x => new UserService(x.GetService<IUserRepository>()!, securityKey));
-            
             services.AddAuthentication(
                 x =>
                 {
@@ -56,32 +87,25 @@ namespace Merwylan.ExampleApi.Api
             });
 
             services.ConfigurePersistenceServices(ConfigurationManager.ConnectionStrings["database"].ConnectionString);
-
             services.AddSwaggerGen();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
-
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Merwylan Example API V1");
             });
-            
-            app.UseHttpsRedirection();
 
+            app.UseHsts();
+            app.UseHttpsRedirection();
             app.UseRouting();
             app.UseCors(x => x
-                .SetIsOriginAllowed(origin => true)
+                .AllowAnyOrigin()
                 .AllowAnyMethod()
-                .AllowAnyHeader()
-                .AllowCredentials());
+                .AllowAnyHeader());
 
             app.UseAuthentication();
             app.UseAuthorization();

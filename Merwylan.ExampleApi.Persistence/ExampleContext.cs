@@ -7,10 +7,13 @@ namespace Merwylan.ExampleApi.Persistence
     {
         private static readonly Action[] _actionsSeeds =
         {
-            new Action { Id = 1, Value = "users-view" },
-            new Action { Id = 2, Value = "users-add" },
-            new Action { Id = 3, Value = "users-update" },
-            new Action { Id = 4, Value = "users-delete" },
+            new Action { Id = 1, Value = "tokens-revoke" },
+            new Action { Id = 2, Value = "tokens-view" },
+            new Action { Id = 3, Value = "users-view" },
+            new Action { Id = 4, Value = "users-view" },
+            new Action { Id = 5, Value = "users-add" },
+            new Action { Id = 6, Value = "users-edit" },
+            new Action { Id = 7, Value = "users-delete" }
         };
 
         private static readonly Role[] _rolesSeeds =

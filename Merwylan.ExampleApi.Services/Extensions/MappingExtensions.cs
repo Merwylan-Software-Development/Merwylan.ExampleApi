@@ -37,6 +37,7 @@ namespace Merwylan.ExampleApi.Services.Extensions
         {
             return new ActionDto
             {
+                Id = action.Id,
                 Name = action.Value
             };
         }

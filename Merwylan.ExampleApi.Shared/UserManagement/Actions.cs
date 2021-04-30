@@ -6,11 +6,12 @@ namespace Merwylan.ExampleApi.Shared.UserManagement
 {
     public enum Actions
     {
-        RevokeTokens,
-        ViewRefreshTokens,
+        RevokeTokens=1,
+        ViewTokens,
         ViewUsers,
         AddUsers,
         EditUsers,
-        DeleteUsers
+        DeleteUsers,
+        AuditSearch
     }
 }

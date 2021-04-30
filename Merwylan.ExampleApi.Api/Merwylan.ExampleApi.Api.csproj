@@ -11,11 +11,16 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.IdentityModel.Protocols" Version="5.6.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="NLog" Version="4.7.9" />
+    <PackageReference Include="NLog.Extensions.Logging" Version="1.7.2" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.1.4" />
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Merwylan.ExampleApi.Audit\Merwylan.ExampleApi.Audit.csproj" />
+    <ProjectReference Include="..\Merwylan.ExampleApi.Mail\Merwylan.ExampleApi.Mail.csproj" />
     <ProjectReference Include="..\Merwylan.ExampleApi.Services\Merwylan.ExampleApi.Services.csproj" />
   </ItemGroup>
 

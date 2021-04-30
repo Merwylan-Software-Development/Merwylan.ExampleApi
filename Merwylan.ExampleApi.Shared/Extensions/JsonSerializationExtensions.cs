@@ -15,14 +15,14 @@ namespace Merwylan.ExampleApi.Shared.Extensions
             ContractResolver = new CamelCasePropertyNamesContractResolver()
         };
 
-        public static string? Serialize<T>(T obj)
+        public static string Serialize<T>(T obj)
         {
-            return obj == null ? null : JsonConvert.SerializeObject(obj, Formatting.Indented);
+            return JsonConvert.SerializeObject(obj, Formatting.Indented);
         }
 
-        public static string? SerializeCamelCase(this object? obj)
+        public static string SerializeCamelCase(this object obj)
         {
-            return obj == null ? null : JsonConvert.SerializeObject(obj, _serializerSettings);
+            return JsonConvert.SerializeObject(obj, _serializerSettings);
         }
 
         public static async Task<T> DeserializeAsync<T>(string path)

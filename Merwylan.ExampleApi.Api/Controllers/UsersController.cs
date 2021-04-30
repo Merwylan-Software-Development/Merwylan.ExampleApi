@@ -3,6 +3,8 @@ using System.Linq;
 using System.Security.Authentication;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Merwylan.ExampleApi.Api.Extensions;
+using Merwylan.ExampleApi.Audit;
 using Merwylan.ExampleApi.Services;
 using Merwylan.ExampleApi.Shared.Auth;
 using Merwylan.ExampleApi.Shared.Extensions;
@@ -19,11 +21,10 @@ namespace Merwylan.ExampleApi.Api.Controllers
     [Route(Program.API_PREFIX + "[controller]")]
     public class UsersController : ExampleControllerBase
     {
-        private readonly ILogger<UsersController> _logger;
 
-        public UsersController(IUserService userService, ILogger<UsersController> logger) :base(userService)
+        public UsersController(ILogger<UsersController> logger, IUserService userService, IAuditService auditService) 
+            : base(logger, userService, auditService)
         {
-            _logger = logger;
         }
 
         [AllowAnonymous]
@@ -41,10 +42,7 @@ namespace Merwylan.ExampleApi.Api.Controllers
 
                 return Ok(response);
             }
-            catch (UserDoesNotExistException)
-            {
-                return BadRequest();
-            }
+            // Keep this to override the middleware: in this particular case, it should be a bad request.
             catch (AuthenticationException)
             {
                 return BadRequest();
@@ -58,197 +56,103 @@ namespace Merwylan.ExampleApi.Api.Controllers
             var refreshToken = Request.Cookies["refreshToken"];
             if (string.IsNullOrEmpty(refreshToken)) return BadRequest();
 
-            try
-            {
-                var response = await UserService.RefreshTokenAsync(refreshToken, IpAddress());
+            var response = await UserService.RefreshTokenAsync(refreshToken, IpAddress());
 
-                if (response == null)
-                    return Unauthorized();
+            if (response == null)
+                return Unauthorized();
 
-                SetTokenCookie(response.RefreshToken);
+            SetTokenCookie(response.RefreshToken);
 
-                return Ok(response);
-            }
-            catch (RefreshTokenNotFoundException)
-            {
-                return BadRequest();
-            }
+            return Ok(response);
         }
 
         [HttpPost("revoke-token")]
         public async Task<IActionResult> RevokeToken([FromBody] RevokeTokenRequest model)
         {
-            try
-            {
-                var token = model.Token ?? Request.Cookies["refreshToken"];
+            var token = model.Token ?? Request.Cookies["refreshToken"];
 
-                if (string.IsNullOrEmpty(token))
-                    return BadRequest();
+            if (string.IsNullOrEmpty(token)) return BadRequest();
 
-                if (!AuthenticatedUser.HasClaim(Actions.RevokeTokens))
-                {
-                    return Unauthorized();
-                }
-
-                var response = await UserService.RevokeTokenAsync(token, IpAddress());
-
-                if (!response)
-                    return NotFound();
-
-                return Ok();
-            }
-            catch (AuthenticationException)
+            if (!AuthenticatedUser.HasClaim(Actions.RevokeTokens)) 
             {
                 return Unauthorized();
             }
-            catch (Exception e)
-            {
-                _logger.LogError(e, "An error occurred while attempting to revoke token.");
-                return InternalServerError();
-            }
+
+            var response = await UserService.RevokeTokenAsync(token, IpAddress());
+            if (!response) return NotFound();
+
+            return Ok();
         }
 
         [HttpGet]
         public IActionResult GetAll()
         {
-            try
+            if (!AuthenticatedUser.HasClaim(Actions.ViewUsers))
             {
-                if (!AuthenticatedUser.HasClaim(Actions.ViewUsers))
-                {
-                    return Unauthorized();
-                }
+                return Unauthorized();
+            }
 
-                var users = UserService.GetAllUsers();
-                return Ok(users);
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, $"An error occurred while attempting to retrieve all users.");
-                return InternalServerError();
-            }
+            var users = UserService.GetAllUsers();
+            return Ok(users);
         }
 
         [HttpGet("{id}")]
         public IActionResult GetById(int id)
         {
-            try
+            if (!AuthenticatedUser.HasClaim(Actions.ViewUsers))
             {
-                if (!AuthenticatedUser.HasClaim(Actions.ViewUsers))
-                {
-                    return Unauthorized();
-                }
+                return Unauthorized();
+            }
 
-                var user = UserService.GetUserById(id);
-                return Ok(user);
-            }
-            catch (UserDoesNotExistException)
-            {
-                return NotFound();
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, $"An error occurred while attempting to retrieve a user by id {id}.");
-                return InternalServerError();
-            }
+            var user = UserService.GetUserById(id);
+            return Ok(user);
         }
 
         [HttpPost]
         public async Task<IActionResult> AddUserAsync(PostUser user)
         {
-            try
+            if (!AuthenticatedUser.HasClaim(Actions.AddUsers))
             {
-                if (!AuthenticatedUser.HasClaim(Actions.AddUsers))
-                {
-                    return Unauthorized();
-                }
+                return Unauthorized();
+            }
 
-                return Ok(await UserService.AddUserAsync(user));
-            }
-            catch (UserAlreadyExistsException)
-            {
-                return BadRequest($"User with name {user.Username} already exists.");
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, "Failed to add a user.");
-                return InternalServerError();
-            }
+            return Ok(await UserService.AddUserAsync(user));
         }
 
         [HttpPut]
         public async Task<IActionResult> EditUserAsync(PutUser user)
         {
-            try
+            if (!AuthenticatedUser.HasClaim(Actions.EditUsers))
             {
-                if (!AuthenticatedUser.HasClaim(Actions.EditUsers))
-                {
-                    return Unauthorized();
-                }
+                return Unauthorized();
+            }
 
-                await UserService.EditUserAsync(user);
-                return Ok();
-            }
-            catch (UserDoesNotExistException)
-            {
-                return BadRequest();
-            }
-            catch (UserAlreadyExistsException)
-            {
-                return BadRequest($"User with name {user.Username} already exists.");
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, "Failed to edit a user.");
-                return InternalServerError();
-            }
+            await UserService.EditUserAsync(user);
+            return Ok();
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUserByIdAsync(int id)
         {
-            try
+            if (!AuthenticatedUser.HasClaim(Actions.DeleteUsers))
             {
-                if (!AuthenticatedUser.HasClaim(Actions.DeleteUsers))
-                {
-                    return Unauthorized();
-                }
+                return Unauthorized();
+            }
 
-                await UserService.DeleteUserAsync(id);
-                return Ok();
-            }
-            catch (UserDoesNotExistException)
-            {
-                return NotFound();
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e,$"An error occurred while attempting to delete user with ID {id}.");
-                return InternalServerError();
-            }
+            await UserService.DeleteUserAsync(id);
+            return Ok();
         }
 
         [HttpGet("{id}/refresh-tokens")]
         public IActionResult GetRefreshTokensById(int id)
         {
-            try
+            if (!AuthenticatedUser.HasClaim(Actions.ViewTokens))
             {
-                if (!AuthenticatedUser.HasClaim(Actions.ViewRefreshTokens))
-                {
-                    return Unauthorized();
-                }
+                return Unauthorized();
+            }
 
-                var user = UserService.GetUserById(id);
-                return Ok(user.RefreshTokens);
-            }
-            catch (UserDoesNotExistException)
-            {
-                return NotFound();
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, $"An error occurred while attempting to get the refresh tokens for user {id}.");
-                return InternalServerError();
-            }
+            var user = UserService.GetUserById(id);
+            return Ok(user.RefreshTokens);
         }
 
         private void SetTokenCookie(string token)
