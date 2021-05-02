@@ -9,6 +9,7 @@ namespace Merwylan.ExampleApi.Persistence
         {
             collection.AddDbContext<ExampleContext>(options => options.UseSqlServer(connectionString));
             collection.AddScoped<IUserRepository, UserRepository>();
+            collection.AddScoped<IAuditRepository, AuditRepository>();
         }
     }
 }

@@ -97,9 +97,10 @@ namespace Merwylan.ExampleApi.Api.Controllers
         }
 
         [HttpGet("{id}")]
-        public IActionResult GetById(int id)
+        public IActionResult GetUseById(int id)
         {
-            if (!AuthenticatedUser.HasClaim(Actions.ViewUsers))
+            var authenticatedUser = AuthenticatedUser;
+            if (authenticatedUser.Id ==id || !authenticatedUser.HasClaim(Actions.ViewUsers))
             {
                 return Unauthorized();
             }

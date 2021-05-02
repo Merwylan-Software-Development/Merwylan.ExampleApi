@@ -21,19 +21,18 @@ namespace Merwylan.ExampleApi.Audit
         public IEnumerable<AuditGetModel> GetAuditModels(AuditSearchModel search)
         {
             var trails = _auditRepository.Get()
-                .Where(x => search.Type == null || x.Type == search.Type)
+                .Where(x => search.Endpoint == null || x.Endpoint == search.Endpoint)
                 .Where(x => search.IsSuccessful == null || x.IsSuccessful == search.IsSuccessful)
                 .Where(x => search.StatusCode == null || x.StatusCode == search.StatusCode)
-                .Where(x => search.SearchDescription == null || x.Description.Contains(search.SearchDescription))
                 .Where(x => search.StartDate == null || x.Occurred >= search.StartDate)
                 .Where(x => search.EndDate == null || x.Occurred <= search.EndDate);
 
             var models = trails.Select(x => new AuditGetModel
             {
                 Id = x.Id,
-                Description = x.Description,
                 Occurred = x.Occurred,
-                Type = x.Type.ToString(CultureInfo.InvariantCulture),
+                Method = x.Method,
+                Endpoint = x.Endpoint,
                 IsSuccessful = x.IsSuccessful,
                 StatusCode = x.StatusCode,
                 Object = x.Object
@@ -49,10 +48,10 @@ namespace Merwylan.ExampleApi.Audit
                 await _auditRepository.AddAuditTrailAsync(new AuditTrail
                 {
                     Id = Guid.NewGuid(),
-                    Description = model.Description,
                     Occurred = DateTime.Now,
-                    Type = model.Type.ToString(),
-                    Object = model.Object.SerializeCamelCase(),
+                    Method = model.Method,
+                    Endpoint = model.Endpoint,
+                    Object = model.Object?.SerializeCamelCase(),
                     IsSuccessful = model.IsSuccessful,
                     StatusCode = model.StatusCode
                 });

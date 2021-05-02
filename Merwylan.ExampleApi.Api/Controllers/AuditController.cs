@@ -9,7 +9,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Merwylan.ExampleApi.Api.Controllers
 {
-    [Microsoft.AspNetCore.Components.Route(Program.API_PREFIX + "[controller]")]
+    [Route(Program.API_PREFIX + "[controller]")]
     [ApiController]
     [Authorize]
     public class AuditController : ExampleControllerBase

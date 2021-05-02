@@ -36,6 +36,7 @@ namespace Merwylan.ExampleApi.Api.Middleware
         private async Task HandleExceptionAsync(HttpContext context, Exception ex)
         {
             _logger.LogError(ex, "An error occurred while trying to handle the request.");
+            
             switch (ex)
             {
                 case AuthenticationException e:

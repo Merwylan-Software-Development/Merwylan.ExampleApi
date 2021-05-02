@@ -1,6 +1,8 @@
 using System;
 using System.Configuration;
 using System.Text;
+using Merwylan.ExampleApi.Api.Middleware;
+using Merwylan.ExampleApi.Audit;
 using Merwylan.ExampleApi.Mail;
 using Merwylan.ExampleApi.Persistence;
 using Merwylan.ExampleApi.Services;
@@ -66,6 +68,7 @@ namespace Merwylan.ExampleApi.Api
             var securityKey = Encoding.ASCII.GetBytes(ConfigurationManager.AppSettings["securityKey"]);
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IUserService>(x => new UserService(x.GetService<IUserRepository>()!, securityKey));
+
             services.AddAuthentication(
                 x =>
                 {
@@ -87,6 +90,7 @@ namespace Merwylan.ExampleApi.Api
             });
 
             services.ConfigurePersistenceServices(ConfigurationManager.ConnectionStrings["database"].ConnectionString);
+            services.ConfigureAuditingServices();
             services.AddSwaggerGen();
         }
 
@@ -106,6 +110,9 @@ namespace Merwylan.ExampleApi.Api
                 .AllowAnyOrigin()
                 .AllowAnyMethod()
                 .AllowAnyHeader());
+
+            app.UseMiddleware<AuditMiddleware>();
+            app.UseMiddleware<ErrorHandlingMiddleware>();
 
             app.UseAuthentication();
             app.UseAuthorization();
