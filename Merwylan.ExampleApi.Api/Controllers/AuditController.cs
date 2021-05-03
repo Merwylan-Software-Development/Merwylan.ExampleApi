@@ -1,4 +1,5 @@
 ﻿using System;
+using Merwylan.ExampleApi.Api.Attributes;
 using Merwylan.ExampleApi.Api.Extensions;
 using Merwylan.ExampleApi.Audit;
 using Merwylan.ExampleApi.Services;
@@ -20,13 +21,9 @@ namespace Merwylan.ExampleApi.Api.Controllers
         }
 
         [HttpPost]
+        [AuthorizedAction(new[] {Actions.AuditSearch})]
         public IActionResult Search(AuditSearchModel search)
         {
-            if (!AuthenticatedUser.HasClaim(Actions.AuditSearch))
-            {
-                return Unauthorized();
-            }
-
             return Ok(AuditService.GetAuditModels(search));
         }
     }

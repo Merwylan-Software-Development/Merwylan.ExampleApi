@@ -16,8 +16,6 @@ namespace Merwylan.ExampleApi.Api.Controllers
         protected readonly IAuditService AuditService;
         protected readonly ILogger<ControllerBase> Logger;
 
-        protected UserDto AuthenticatedUser => GetUser();
-
         public ExampleControllerBase(ILogger<ControllerBase> logger, IUserService userService, IAuditService auditService)
         {
             Logger = logger;
@@ -34,17 +32,5 @@ namespace Merwylan.ExampleApi.Api.Controllers
             return StatusCode((int)HttpStatusCode.InternalServerError, message);
         }
 
-        private UserDto GetUser()
-        {
-            var claimValue = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
-            var isValidInt = int.TryParse(claimValue, out var userId);
-
-            if (!isValidInt) throw new AuthenticationException();
-
-            var user = UserService.GetUserById(userId);
-            if (user == null) throw new AuthenticationException();
-
-            return user;
-        }
-    }
+    }   
 }

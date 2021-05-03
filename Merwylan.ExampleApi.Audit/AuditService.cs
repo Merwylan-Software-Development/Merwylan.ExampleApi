@@ -20,25 +20,22 @@ namespace Merwylan.ExampleApi.Audit
 
         public IEnumerable<AuditGetModel> GetAuditModels(AuditSearchModel search)
         {
-            var trails = _auditRepository.Get()
+            return _auditRepository.Get()
                 .Where(x => search.Endpoint == null || x.Endpoint == search.Endpoint)
                 .Where(x => search.IsSuccessful == null || x.IsSuccessful == search.IsSuccessful)
                 .Where(x => search.StatusCode == null || x.StatusCode == search.StatusCode)
                 .Where(x => search.StartDate == null || x.Occurred >= search.StartDate)
-                .Where(x => search.EndDate == null || x.Occurred <= search.EndDate);
-
-            var models = trails.Select(x => new AuditGetModel
-            {
-                Id = x.Id,
-                Occurred = x.Occurred,
-                Method = x.Method,
-                Endpoint = x.Endpoint,
-                IsSuccessful = x.IsSuccessful,
-                StatusCode = x.StatusCode,
-                Object = x.Request
-            });
-
-            return models;
+                .Where(x => search.EndDate == null || x.Occurred <= search.EndDate)
+                .Select(x => new AuditGetModel
+                {
+                    Id = x.Id,
+                    Occurred = x.Occurred,
+                    Method = x.Method,
+                    Endpoint = x.Endpoint,
+                    IsSuccessful = x.IsSuccessful,
+                    StatusCode = x.StatusCode,
+                    Object = x.Request
+                });
         }
 
         public async Task<bool> AddAuditTrailAsync(AuditPostModel model)

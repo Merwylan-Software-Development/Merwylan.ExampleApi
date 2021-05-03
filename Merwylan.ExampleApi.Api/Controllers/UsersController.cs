@@ -3,6 +3,7 @@ using System.Linq;
 using System.Security.Authentication;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Merwylan.ExampleApi.Api.Attributes;
 using Merwylan.ExampleApi.Api.Extensions;
 using Merwylan.ExampleApi.Audit;
 using Merwylan.ExampleApi.Services;
@@ -67,13 +68,9 @@ namespace Merwylan.ExampleApi.Api.Controllers
         }
 
         [HttpPost("revoke-token")]
+        [AuthorizedAction(new[] { Actions.RevokeTokens })]
         public async Task<IActionResult> RevokeToken([FromBody] RevokeTokenRequest model)
         {
-            if (!AuthenticatedUser.HasClaim(Actions.RevokeTokens))
-            {
-                return Unauthorized();
-            }
-
             var token = model.Token ?? Request.Cookies["refreshToken"];
 
             if (string.IsNullOrEmpty(token)) return BadRequest();
@@ -85,86 +82,56 @@ namespace Merwylan.ExampleApi.Api.Controllers
         }
 
         [HttpGet("[controller]")]
+        [AuthorizedAction(new[] {Actions.ViewUsers})]
         public IActionResult GetAllUsers()
         {
-            if (!AuthenticatedUser.HasClaim(Actions.ViewUsers))
-            {
-                return Unauthorized();
-            }
-
             var users = UserService.GetAllUsers();
             return Ok(users);
         }
 
         [HttpGet("[controller]/{id}")]
+        [AuthorizedAction(new[] { Actions.ViewUsers })]
         public IActionResult GetUserById(int id)
         {
-            var authenticatedUser = AuthenticatedUser;
-            if (authenticatedUser.Id ==id || !authenticatedUser.HasClaim(Actions.ViewUsers))
-            {
-                return Unauthorized();
-            }
-
             var user = UserService.GetUserById(id);
             return Ok(user);
         }
 
         [HttpPost("[controller]")]
+        [AuthorizedAction(new [] {Actions.AddUsers})]
         public async Task<IActionResult> AddUserAsync(PostUser user)
         {
-            if (!AuthenticatedUser.HasClaim(Actions.AddUsers))
-            {
-                return Unauthorized();
-            }
-
             return Ok(await UserService.AddUserAsync(user));
         }
 
         [HttpPost("[controller]")]
+        [AuthorizedAction(new [] {Actions.EditUsers})]
         public async Task<IActionResult> EditUserAsync(PutUser user)
         {
-            if (!AuthenticatedUser.HasClaim(Actions.EditUsers))
-            {
-                return Unauthorized();
-            }
-
             await UserService.EditUserAsync(user);
             return Ok();
         }
 
         [HttpDelete("[controller]/{id}")]
+        [AuthorizedAction(new [] {Actions.DeleteUsers})]
         public async Task<IActionResult> DeleteUserByIdAsync(int id)
         {
-            if (!AuthenticatedUser.HasClaim(Actions.DeleteUsers))
-            {
-                return Unauthorized();
-            }
-
             await UserService.DeleteUserAsync(id);
             return Ok();
         }
 
         [HttpGet("actions")]
+        [AuthorizedAction(new [] {Actions.ViewActions})]
         public IActionResult GetAllActions()
         {
-            if (!AuthenticatedUser.HasClaim(Actions.GetAllClaims))
-            {
-                return Unauthorized();
-            }
-
             return Ok(UserService.GetActions());
         }
 
-        [HttpGet]
-
+        
         [HttpGet("[controller]/{id}/refresh-tokens")]
+        [AuthorizedAction(new [] {Actions.ViewTokens})]
         public IActionResult GetRefreshTokensById(int id)
         {
-            if (!AuthenticatedUser.HasClaim(Actions.ViewTokens))
-            {
-                return Unauthorized();
-            }
-
             var user = UserService.GetUserById(id);
             return Ok(user.RefreshTokens);
         }

@@ -1,38 +1,41 @@
-﻿using Merwylan.ExampleApi.Persistence.Entities;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
+using Merwylan.ExampleApi.Persistence.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace Merwylan.ExampleApi.Persistence 
 { 
     public class ExampleContext : DbContext
     {
-        private static readonly Action[] _actionsSeeds =
+        public static readonly Action[] ActionsSeeds =
         {
-            new Action { Id = 1, Value = "tokens-revoke" },
+            new Action { Id = 1, Value = "tokens-revoke"},
             new Action { Id = 2, Value = "tokens-view" },
             new Action { Id = 3, Value = "users-view" },
-            new Action { Id = 4, Value = "users-view" },
-            new Action { Id = 5, Value = "users-add" },
-            new Action { Id = 6, Value = "users-edit" },
-            new Action { Id = 7, Value = "users-delete" }
+            new Action { Id = 4, Value = "users-add" },
+            new Action { Id = 5, Value = "users-edit" },
+            new Action { Id = 6, Value = "users-delete" },
+            new Action{Id = 7, Value = "actions-view"},
+            new Action{Id = 8, Value = "audit-search"} 
         };
 
-        private static readonly Role[] _rolesSeeds =
+        public static readonly Role[] RolesSeeds =
         {
             new Role
             {
-                // For seeding many-to-many, how do you reference both actions and users?
-                Id = 1, Name = "Administrator", Actions = _actionsSeeds
+                Name = "Administrator", Actions = ActionsSeeds
             }
         };
 
-        private static readonly User[] _usersSeeds =
+        public static readonly User[] UsersSeeds =
         {
             new User
             {
                 // Do we reference roles here? See comment above.
                 // Default user root with password root123, delete after api is configured!
-                Id = 1, Username = "root",
-                HashedPassword = "$2a$11$CvBqa.owIsNm1bVVdg4sSO1p0SmEkRmpmljo3Ys9jj/Wg2eN5wcxK", Roles = _rolesSeeds
+                Username = "root",
+                HashedPassword = "$2a$11$CvBqa.owIsNm1bVVdg4sSO1p0SmEkRmpmljo3Ys9jj/Wg2eN5wcxK",
+                Roles = RolesSeeds
             }
         };
 
@@ -47,7 +50,6 @@ namespace Merwylan.ExampleApi.Persistence
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<RefreshToken>();
-            modelBuilder.Entity<Action>().HasData(_actionsSeeds);
             modelBuilder.Entity<Role>()
                 .HasMany(r => r.Actions)
                 .WithMany(a => a.Roles);
@@ -57,8 +59,6 @@ namespace Merwylan.ExampleApi.Persistence
             modelBuilder.Entity<User>()
                 .HasMany(u => u.RefreshTokens)
                 .WithOne(r => r.User);
-
-            //modelBuilder.Entity<User>().HasData(_usersSeeds);
         }
     }
 }

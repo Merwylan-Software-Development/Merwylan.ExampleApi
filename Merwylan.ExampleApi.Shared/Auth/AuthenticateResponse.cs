@@ -5,8 +5,7 @@ namespace Merwylan.ExampleApi.Shared.Auth
 {
     public class AuthenticateResponse
     {
-        public int UserId { get; set; }
-        public string Username { get; set; }
+        public UserDto User { get; set; }
         public string JwtToken { get; set; }
 
         [JsonIgnore] // refresh token is returned in http only cookie
@@ -14,8 +13,7 @@ namespace Merwylan.ExampleApi.Shared.Auth
 
         public AuthenticateResponse(UserDto user, string jwtToken, string refreshToken)
         {
-            UserId = user.Id;
-            Username = user.Username;
+            User = user;
             JwtToken = jwtToken;
             RefreshToken = refreshToken;
         }

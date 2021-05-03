@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Merwylan.ExampleApi.Persistence.Migrations
 {
     [DbContext(typeof(ExampleContext))]
-    [Migration("20201125192723_v1")]
-    partial class v1
+    [Migration("20210503213333_seed5")]
+    partial class seed5
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -38,7 +38,7 @@ namespace Merwylan.ExampleApi.Persistence.Migrations
 
             modelBuilder.Entity("Merwylan.ExampleApi.Persistence.Entities.Action", b =>
                 {
-                    b.Property<int>("UserId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .UseIdentityColumn();
@@ -47,7 +47,7 @@ namespace Merwylan.ExampleApi.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("UserId");
+                    b.HasKey("Id");
 
                     b.ToTable("Actions");
 
@@ -55,28 +55,79 @@ namespace Merwylan.ExampleApi.Persistence.Migrations
                         new
                         {
                             Id = 1,
-                            Value = "users-view"
+                            Value = "tokens-revoke"
                         },
                         new
                         {
                             Id = 2,
-                            Value = "users-add"
+                            Value = "tokens-view"
                         },
                         new
                         {
                             Id = 3,
-                            Value = "users-update"
+                            Value = "users-view"
                         },
                         new
                         {
                             Id = 4,
+                            Value = "users-add"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Value = "users-edit"
+                        },
+                        new
+                        {
+                            Id = 6,
                             Value = "users-delete"
+                        },
+                        new
+                        {
+                            Id = 7,
+                            Value = "actions-view"
+                        },
+                        new
+                        {
+                            Id = 8,
+                            Value = "audit-search"
                         });
+                });
+
+            modelBuilder.Entity("Merwylan.ExampleApi.Persistence.Entities.AuditTrail", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Endpoint")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsSuccessful")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Method")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("Occurred")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Request")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("StatusCode")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("AuditTrails");
                 });
 
             modelBuilder.Entity("Merwylan.ExampleApi.Persistence.Entities.RefreshToken", b =>
                 {
-                    b.Property<int>("UserId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .UseIdentityColumn();
@@ -109,7 +160,7 @@ namespace Merwylan.ExampleApi.Persistence.Migrations
                     b.Property<int>("UserId")
                         .HasColumnType("int");
 
-                    b.HasKey("UserId");
+                    b.HasKey("Id");
 
                     b.HasIndex("UserId");
 
@@ -118,7 +169,7 @@ namespace Merwylan.ExampleApi.Persistence.Migrations
 
             modelBuilder.Entity("Merwylan.ExampleApi.Persistence.Entities.Role", b =>
                 {
-                    b.Property<int>("UserId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .UseIdentityColumn();
@@ -127,14 +178,14 @@ namespace Merwylan.ExampleApi.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("UserId");
+                    b.HasKey("Id");
 
                     b.ToTable("Roles");
                 });
 
             modelBuilder.Entity("Merwylan.ExampleApi.Persistence.Entities.User", b =>
                 {
-                    b.Property<int>("UserId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .UseIdentityColumn();
@@ -147,7 +198,7 @@ namespace Merwylan.ExampleApi.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("UserId");
+                    b.HasKey("Id");
 
                     b.ToTable("Users");
                 });
