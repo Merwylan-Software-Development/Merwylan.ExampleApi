@@ -26,35 +26,35 @@ namespace Merwylan.ExampleApi.Persistence.Migrations
 
             migrationBuilder.UpdateData(
                 table: "Actions",
-                keyColumn: "Id",
+                keyColumn: "UserId",
                 keyValue: 1,
                 column: "Value",
                 value: "tokens-revoke");
 
             migrationBuilder.UpdateData(
                 table: "Actions",
-                keyColumn: "Id",
+                keyColumn: "UserId",
                 keyValue: 2,
                 column: "Value",
                 value: "tokens-view");
 
             migrationBuilder.UpdateData(
                 table: "Actions",
-                keyColumn: "Id",
+                keyColumn: "UserId",
                 keyValue: 3,
                 column: "Value",
                 value: "users-view");
 
             migrationBuilder.UpdateData(
                 table: "Actions",
-                keyColumn: "Id",
+                keyColumn: "UserId",
                 keyValue: 4,
                 column: "Value",
                 value: "users-view");
 
             migrationBuilder.InsertData(
                 table: "Actions",
-                columns: new[] { "Id", "Value" },
+                columns: new[] { "UserId", "Value" },
                 values: new object[,]
                 {
                     { 5, "users-add" },
@@ -70,43 +70,43 @@ namespace Merwylan.ExampleApi.Persistence.Migrations
 
             migrationBuilder.DeleteData(
                 table: "Actions",
-                keyColumn: "Id",
+                keyColumn: "UserId",
                 keyValue: 5);
 
             migrationBuilder.DeleteData(
                 table: "Actions",
-                keyColumn: "Id",
+                keyColumn: "UserId",
                 keyValue: 6);
 
             migrationBuilder.DeleteData(
                 table: "Actions",
-                keyColumn: "Id",
+                keyColumn: "UserId",
                 keyValue: 7);
 
             migrationBuilder.UpdateData(
                 table: "Actions",
-                keyColumn: "Id",
+                keyColumn: "UserId",
                 keyValue: 1,
                 column: "Value",
                 value: "users-view");
 
             migrationBuilder.UpdateData(
                 table: "Actions",
-                keyColumn: "Id",
+                keyColumn: "UserId",
                 keyValue: 2,
                 column: "Value",
                 value: "users-add");
 
             migrationBuilder.UpdateData(
                 table: "Actions",
-                keyColumn: "Id",
+                keyColumn: "UserId",
                 keyValue: 3,
                 column: "Value",
                 value: "users-update");
 
             migrationBuilder.UpdateData(
                 table: "Actions",
-                keyColumn: "Id",
+                keyColumn: "UserId",
                 keyValue: 4,
                 column: "Value",
                 value: "users-delete");

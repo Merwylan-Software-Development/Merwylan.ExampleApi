@@ -13,6 +13,7 @@ using Merwylan.ExampleApi.Shared.Auth;
 using Merwylan.ExampleApi.Shared.UserManagement;
 using Microsoft.IdentityModel.Tokens;
 using static BCrypt.Net.BCrypt;
+using Action = Merwylan.ExampleApi.Persistence.Entities.Action;
 
 namespace Merwylan.ExampleApi.Services
 {
@@ -122,6 +123,37 @@ namespace Merwylan.ExampleApi.Services
 
             return new AuthenticateResponse(user.ToDto(), jwtToken, refreshToken.Token);
         }
+
+        public IEnumerable<ActionDto> GetActions()
+        {
+            return _userRepository.GetAllActions().Select(x => x.ToDto());
+        }
+
+        public async Task<RoleDto> AddRole(RoleDto role)
+        {
+            AssertRoleIsAvailable(role);
+
+            var addedRole = await _userRepository.AddRoleAsync(new Role()
+            {
+                Name = role.Name,
+                Actions = role.Actions.Select(x => new Action
+                {
+                    Id = x.Id,
+                    Value = x.Name
+                }).ToList()
+            });
+
+            await _userRepository.SaveAsync();
+            return addedRole.ToDto();
+        }
+
+        private void AssertRoleIsAvailable(RoleDto role)
+        {
+            var isRoleAvailable = _userRepository.GetAllRoles().FirstOrDefault(x => x.Name == role.Name) == null;
+
+            if (!isRoleAvailable) throw new RoleAlreadyExistsException();
+        }
+
 
         public async Task<AuthenticateResponse> RefreshTokenAsync(string token, string ipAddress)
         {

@@ -13,6 +13,8 @@ namespace Merwylan.ExampleApi.Services
         Task EditUserAsync(PutUser user);
         Task DeleteUserAsync(int userId);
         Task<AuthenticateResponse> AuthenticateAsync(AuthenticateRequest model, string ipAddress);
+        IEnumerable<ActionDto> GetActions();
+        Task<RoleDto> AddRole(RoleDto role);
         Task<AuthenticateResponse> RefreshTokenAsync(string token, string ipAddress);
         Task<bool> RevokeTokenAsync(string token, string ipAddress);
     }

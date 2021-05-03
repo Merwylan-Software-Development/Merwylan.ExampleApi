@@ -6,7 +6,7 @@ namespace Merwylan.ExampleApi.Shared.UserManagement
     {
         [Required]
         [Range(1, int.MaxValue, ErrorMessage = "The userId must be provided to edit a user.")]
-        [Display(Name = "Id")]
+        [Display(Name = "UserId")]
         public int Id { get; set; }
 
         [StringLength(16, ErrorMessage = "The {0} must be between {2} and {1} characters long.", MinimumLength = 3)]

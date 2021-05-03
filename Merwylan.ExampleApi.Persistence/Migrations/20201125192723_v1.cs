@@ -61,13 +61,13 @@ namespace Merwylan.ExampleApi.Persistence.Migrations
                         name: "FK_ActionRole_Actions_ActionsId",
                         column: x => x.ActionsId,
                         principalTable: "Actions",
-                        principalColumn: "Id",
+                        principalColumn: "UserId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_ActionRole_Roles_RolesId",
                         column: x => x.RolesId,
                         principalTable: "Roles",
-                        principalColumn: "Id",
+                        principalColumn: "UserId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -94,7 +94,7 @@ namespace Merwylan.ExampleApi.Persistence.Migrations
                         name: "FK_RefreshTokens_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
-                        principalColumn: "Id",
+                        principalColumn: "UserId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -112,19 +112,19 @@ namespace Merwylan.ExampleApi.Persistence.Migrations
                         name: "FK_RoleUser_Roles_RolesId",
                         column: x => x.RolesId,
                         principalTable: "Roles",
-                        principalColumn: "Id",
+                        principalColumn: "UserId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_RoleUser_Users_UsersId",
                         column: x => x.UsersId,
                         principalTable: "Users",
-                        principalColumn: "Id",
+                        principalColumn: "UserId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.InsertData(
                 table: "Actions",
-                columns: new[] { "Id", "Value" },
+                columns: new[] { "UserId", "Value" },
                 values: new object[,]
                 {
                     { 1, "users-view" },
@@ -134,7 +134,7 @@ namespace Merwylan.ExampleApi.Persistence.Migrations
                 });
               migrationBuilder.InsertData(
                 table: "Roles",
-                columns: new[] { "Id", "Name" },
+                columns: new[] { "UserId", "Name" },
                 values: new object[,]
                 {
                     { 1, "Administrator" },
@@ -151,7 +151,7 @@ namespace Merwylan.ExampleApi.Persistence.Migrations
                 });
               migrationBuilder.InsertData(
                 table: "Users",
-                columns: new[] { "Id", "Username", "HashedPassword" },
+                columns: new[] { "UserId", "Username", "HashedPassword" },
                 values: new object[,]
                 {
                     { 1, "root","$2a$11$CvBqa.owIsNm1bVVdg4sSO1p0SmEkRmpmljo3Ys9jj/Wg2eN5wcxK"}

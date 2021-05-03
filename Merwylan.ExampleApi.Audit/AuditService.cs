@@ -35,7 +35,7 @@ namespace Merwylan.ExampleApi.Audit
                 Endpoint = x.Endpoint,
                 IsSuccessful = x.IsSuccessful,
                 StatusCode = x.StatusCode,
-                Object = x.Object
+                Object = x.Request
             });
 
             return models;
@@ -51,7 +51,7 @@ namespace Merwylan.ExampleApi.Audit
                     Occurred = DateTime.Now,
                     Method = model.Method,
                     Endpoint = model.Endpoint,
-                    Object = model.Object?.SerializeCamelCase(),
+                    Request = model.Request?.SerializeCamelCase(),
                     IsSuccessful = model.IsSuccessful,
                     StatusCode = model.StatusCode
                 });

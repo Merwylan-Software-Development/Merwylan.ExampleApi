@@ -12,6 +12,9 @@ namespace Merwylan.ExampleApi.Persistence
         User? GetUserByRefreshToken(string refreshToken);
         Task<User> AddUserAsync(User user);
         void UpdateUser(User user);
+        IEnumerable<Action> GetAllActions();
+        IEnumerable<Role> GetAllRoles();
+        Task<Role> AddRoleAsync(Role role);
         void AddRefreshToken(int userId, RefreshToken refreshToken);
         void UpdateRefreshToken(int userId, RefreshToken refreshToken);
         void DeleteUser(int id);

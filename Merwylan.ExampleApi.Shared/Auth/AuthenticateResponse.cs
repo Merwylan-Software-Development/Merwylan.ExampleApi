@@ -5,7 +5,7 @@ namespace Merwylan.ExampleApi.Shared.Auth
 {
     public class AuthenticateResponse
     {
-        public int Id { get; set; }
+        public int UserId { get; set; }
         public string Username { get; set; }
         public string JwtToken { get; set; }
 
@@ -14,7 +14,7 @@ namespace Merwylan.ExampleApi.Shared.Auth
 
         public AuthenticateResponse(UserDto user, string jwtToken, string refreshToken)
         {
-            Id = user.Id;
+            UserId = user.Id;
             Username = user.Username;
             JwtToken = jwtToken;
             RefreshToken = refreshToken;

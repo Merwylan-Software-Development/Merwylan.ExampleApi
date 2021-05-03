@@ -44,6 +44,22 @@ namespace Merwylan.ExampleApi.Persistence
             return insertedUser.Entity;
         }
 
+        public IEnumerable<Action> GetAllActions()
+        {
+            return _context.Actions;
+        }
+
+        public IEnumerable<Role> GetAllRoles()
+        {
+            return _context.Roles;
+        }
+
+        public async Task<Role> AddRoleAsync(Role role)
+        {
+            var insertedRole = await _context.Roles.AddAsync(role);
+            return insertedRole.Entity;
+        }
+
         public void AddRefreshToken(int userId, RefreshToken refreshToken)
         {
             _context.Users.FirstOrDefault(user => userId == user.Id)?.RefreshTokens.Add(refreshToken);

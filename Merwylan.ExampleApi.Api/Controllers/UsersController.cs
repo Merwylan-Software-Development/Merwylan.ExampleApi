@@ -18,7 +18,7 @@ namespace Merwylan.ExampleApi.Api.Controllers
 {
     [Authorize]
     [ApiController]
-    [Route(Program.API_PREFIX + "[controller]")]
+    [Route(Program.API_PREFIX)]
     public class UsersController : ExampleControllerBase
     {
 
@@ -69,14 +69,14 @@ namespace Merwylan.ExampleApi.Api.Controllers
         [HttpPost("revoke-token")]
         public async Task<IActionResult> RevokeToken([FromBody] RevokeTokenRequest model)
         {
-            var token = model.Token ?? Request.Cookies["refreshToken"];
-
-            if (string.IsNullOrEmpty(token)) return BadRequest();
-
-            if (!AuthenticatedUser.HasClaim(Actions.RevokeTokens)) 
+            if (!AuthenticatedUser.HasClaim(Actions.RevokeTokens))
             {
                 return Unauthorized();
             }
+
+            var token = model.Token ?? Request.Cookies["refreshToken"];
+
+            if (string.IsNullOrEmpty(token)) return BadRequest();
 
             var response = await UserService.RevokeTokenAsync(token, IpAddress());
             if (!response) return NotFound();
@@ -84,8 +84,8 @@ namespace Merwylan.ExampleApi.Api.Controllers
             return Ok();
         }
 
-        [HttpGet]
-        public IActionResult GetAll()
+        [HttpGet("[controller]")]
+        public IActionResult GetAllUsers()
         {
             if (!AuthenticatedUser.HasClaim(Actions.ViewUsers))
             {
@@ -96,8 +96,8 @@ namespace Merwylan.ExampleApi.Api.Controllers
             return Ok(users);
         }
 
-        [HttpGet("{id}")]
-        public IActionResult GetUseById(int id)
+        [HttpGet("[controller]/{id}")]
+        public IActionResult GetUserById(int id)
         {
             var authenticatedUser = AuthenticatedUser;
             if (authenticatedUser.Id ==id || !authenticatedUser.HasClaim(Actions.ViewUsers))
@@ -109,7 +109,7 @@ namespace Merwylan.ExampleApi.Api.Controllers
             return Ok(user);
         }
 
-        [HttpPost]
+        [HttpPost("[controller]")]
         public async Task<IActionResult> AddUserAsync(PostUser user)
         {
             if (!AuthenticatedUser.HasClaim(Actions.AddUsers))
@@ -120,7 +120,7 @@ namespace Merwylan.ExampleApi.Api.Controllers
             return Ok(await UserService.AddUserAsync(user));
         }
 
-        [HttpPut]
+        [HttpPost("[controller]")]
         public async Task<IActionResult> EditUserAsync(PutUser user)
         {
             if (!AuthenticatedUser.HasClaim(Actions.EditUsers))
@@ -132,7 +132,7 @@ namespace Merwylan.ExampleApi.Api.Controllers
             return Ok();
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("[controller]/{id}")]
         public async Task<IActionResult> DeleteUserByIdAsync(int id)
         {
             if (!AuthenticatedUser.HasClaim(Actions.DeleteUsers))
@@ -144,7 +144,20 @@ namespace Merwylan.ExampleApi.Api.Controllers
             return Ok();
         }
 
-        [HttpGet("{id}/refresh-tokens")]
+        [HttpGet("actions")]
+        public IActionResult GetAllActions()
+        {
+            if (!AuthenticatedUser.HasClaim(Actions.GetAllClaims))
+            {
+                return Unauthorized();
+            }
+
+            return Ok(UserService.GetActions());
+        }
+
+        [HttpGet]
+
+        [HttpGet("[controller]/{id}/refresh-tokens")]
         public IActionResult GetRefreshTokensById(int id)
         {
             if (!AuthenticatedUser.HasClaim(Actions.ViewTokens))

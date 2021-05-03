@@ -12,6 +12,6 @@ namespace Merwylan.ExampleApi.Persistence.Entities
         public string Endpoint { get; set; } = null!;
         public int StatusCode { get; set; }
         public bool IsSuccessful { get; set; }
-        public string? Object { get; set; } 
+        public string? Request { get; set; } 
     }
 }

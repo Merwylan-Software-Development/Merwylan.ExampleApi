@@ -6,6 +6,6 @@
         public string Endpoint { get; set; }
         public int StatusCode { get; set; }
         public bool IsSuccessful { get; set; }
-        public object Object { get; set; }
+        public object Request { get; set; }
     }
 }

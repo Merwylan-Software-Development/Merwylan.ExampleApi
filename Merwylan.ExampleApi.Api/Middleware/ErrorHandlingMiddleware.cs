@@ -45,6 +45,7 @@ namespace Merwylan.ExampleApi.Api.Middleware
                 case UserDoesNotExistException e:
                 case UserAlreadyExistsException e2:
                 case RefreshTokenNotFoundException e3:
+                case RoleAlreadyExistsException e4:
                     context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
                     break;
                 case { } e:

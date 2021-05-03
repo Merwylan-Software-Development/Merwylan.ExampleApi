@@ -14,11 +14,7 @@ namespace Merwylan.ExampleApi.Services.Extensions
                 Username = user.Username,
                 HashedPassword = user.HashedPassword,
                 RefreshTokens = user.RefreshTokens.Select(ToDto).ToArray(),
-                Roles = user.Roles.Select(x => new RoleDto { Name = x.Name }).ToArray(),
-                AuthorizedActions = user.Roles
-                                        .SelectMany(userRole => userRole.Actions)
-                                        .Select(ToDto)
-                                        .ToArray()
+                Roles = user.Roles.Select(x => new RoleDto { Name = x.Name, Actions = x.Actions.Select(ToDto).ToList()}).ToArray(),
             };
         }
 
@@ -30,6 +26,15 @@ namespace Merwylan.ExampleApi.Services.Extensions
                 Created = token.Created,
                 Expires = token.Expires,
                 IpAddress = token.IpAddress
+            };
+        }
+
+        public static RoleDto ToDto(this Role role)
+        {
+            return new RoleDto
+            {
+                Actions = role.Actions.Select(ToDto).ToList(),
+                Name = role.Name
             };
         }
 

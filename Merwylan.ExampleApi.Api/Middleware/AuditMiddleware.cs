@@ -56,8 +56,8 @@ namespace Merwylan.ExampleApi.Api.Middleware
                 Endpoint = endpoint.Metadata?.GetMetadata<HttpMethodAttribute>()?.Template, 
                 // Do not display body when it concerns the user endpoints (sensitive data such as passwords
                 // cannot be stored as plaintext)
-                Object = endpoint.DisplayName.Contains("users", StringComparison.CurrentCultureIgnoreCase) 
-                    ? null : await GetInputRequestAsync(context)
+                Request = endpoint.DisplayName.Contains("users", StringComparison.CurrentCultureIgnoreCase) 
+                    ? null : await GetRequestAsync(context),
             };
 
             if (!await auditService.AddAuditTrailAsync(auditModel))
@@ -70,7 +70,7 @@ namespace Merwylan.ExampleApi.Api.Middleware
             }
         }
 
-        private async Task<string> GetInputRequestAsync(HttpContext context)
+        private async Task<string> GetRequestAsync(HttpContext context)
         {
             var inputStream = context.Request.GetContentFromFileOrBody();
             inputStream.Position = 0;

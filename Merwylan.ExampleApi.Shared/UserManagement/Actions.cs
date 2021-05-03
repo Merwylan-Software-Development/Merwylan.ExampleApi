@@ -12,6 +12,7 @@ namespace Merwylan.ExampleApi.Shared.UserManagement
         AddUsers,
         EditUsers,
         DeleteUsers,
-        AuditSearch
+        AuditSearch,
+        GetAllClaims
     }
 }

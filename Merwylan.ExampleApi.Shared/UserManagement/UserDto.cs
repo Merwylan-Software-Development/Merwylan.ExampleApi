@@ -11,8 +11,6 @@ namespace Merwylan.ExampleApi.Shared.UserManagement
         [JsonIgnore] 
         public string HashedPassword { get; set; } = string.Empty;
 
-        [JsonIgnore] public ActionDto[] AuthorizedActions { get; set; } = new ActionDto[0];
-
         [JsonIgnore] 
         public RefreshTokenDto[] RefreshTokens { get; set; } = new RefreshTokenDto[0];
 
