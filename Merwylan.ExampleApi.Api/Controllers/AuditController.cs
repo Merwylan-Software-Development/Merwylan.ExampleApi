@@ -21,7 +21,7 @@ namespace Merwylan.ExampleApi.Api.Controllers
         }
 
         [HttpPost]
-        [AuthorizedAction(new[] {Actions.AuditSearch})]
+        [AuthorizedAction(Actions.AuditSearch)]
         public IActionResult Search(AuditSearchModel search)
         {
             return Ok(AuditService.GetAuditModels(search));

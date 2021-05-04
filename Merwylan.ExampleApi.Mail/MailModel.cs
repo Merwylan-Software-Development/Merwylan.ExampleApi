@@ -4,7 +4,6 @@ namespace Merwylan.ExampleApi.Mail
 {
     public class MailModel
     {
-        public int? StatusCode { get; set; }
         public string Message { get; set; }
         public string Subject { get; set; }
         public IList<string> AttachmentFilePaths { get; set; } = new List<string>();

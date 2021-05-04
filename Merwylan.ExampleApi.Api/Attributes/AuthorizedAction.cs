@@ -10,9 +10,9 @@ namespace Merwylan.ExampleApi.Api.Attributes
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
     public class AuthorizedAction : TypeFilterAttribute
     {
-        public AuthorizedAction(Actions[] actions) : base(typeof(AuthorizedActionFilter))
+        public AuthorizedAction(Actions action) : base(typeof(AuthorizedActionFilter))
         {
-            Arguments = actions.Cast<object>().ToArray();
+            Arguments = new []{ (object)action};
         }
     }
 }

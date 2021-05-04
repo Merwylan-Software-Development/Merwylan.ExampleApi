@@ -43,6 +43,8 @@ namespace Merwylan.ExampleApi.Api.Middleware
                     context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
                     break;
                 case UserDoesNotExistException e:
+                    context.Response.StatusCode = (int) HttpStatusCode.NotFound;
+                    break;
                 case UserAlreadyExistsException e2:
                 case RefreshTokenNotFoundException e3:
                 case RoleAlreadyExistsException e4:

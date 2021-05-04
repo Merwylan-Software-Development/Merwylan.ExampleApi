@@ -51,7 +51,7 @@ namespace Merwylan.ExampleApi.Api
             catch (Exception e)
             {
                 var logger = loggerFactory.CreateLogger<Program>();
-                logger.LogError(e, "An error occured during migration");
+                logger.LogError(e, "An error occurred during migration");
             }
 
             await host.RunAsync();

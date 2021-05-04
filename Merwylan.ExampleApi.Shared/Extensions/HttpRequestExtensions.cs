@@ -50,7 +50,6 @@ namespace Merwylan.ExampleApi.Shared.Extensions
             {
                 return false;
             }
-
         }
 
         public static Stream GetContentFromFileOrBody(this HttpRequest request)

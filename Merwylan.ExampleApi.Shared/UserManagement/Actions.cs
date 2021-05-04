@@ -14,5 +14,6 @@ namespace Merwylan.ExampleApi.Shared.UserManagement
         DeleteUsers,
         ViewActions,
         AuditSearch,
+        Test
     }
 }

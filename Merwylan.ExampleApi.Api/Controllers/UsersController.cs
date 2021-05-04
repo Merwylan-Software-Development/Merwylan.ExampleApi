@@ -68,7 +68,7 @@ namespace Merwylan.ExampleApi.Api.Controllers
         }
 
         [HttpPost("revoke-token")]
-        [AuthorizedAction(new[] { Actions.RevokeTokens })]
+        [AuthorizedAction(Actions.RevokeTokens)]
         public async Task<IActionResult> RevokeToken([FromBody] RevokeTokenRequest model)
         {
             var token = model.Token ?? Request.Cookies["refreshToken"];
@@ -82,7 +82,7 @@ namespace Merwylan.ExampleApi.Api.Controllers
         }
 
         [HttpGet("[controller]")]
-        [AuthorizedAction(new[] {Actions.ViewUsers})]
+        [AuthorizedAction(Actions.Test)]
         public IActionResult GetAllUsers()
         {
             var users = UserService.GetAllUsers();
@@ -90,7 +90,7 @@ namespace Merwylan.ExampleApi.Api.Controllers
         }
 
         [HttpGet("[controller]/{id}")]
-        [AuthorizedAction(new[] { Actions.ViewUsers })]
+        [AuthorizedAction(Actions.ViewUsers)]
         public IActionResult GetUserById(int id)
         {
             var user = UserService.GetUserById(id);
@@ -98,14 +98,14 @@ namespace Merwylan.ExampleApi.Api.Controllers
         }
 
         [HttpPost("[controller]")]
-        [AuthorizedAction(new [] {Actions.AddUsers})]
+        [AuthorizedAction(Actions.AddUsers)]
         public async Task<IActionResult> AddUserAsync(PostUser user)
         {
             return Ok(await UserService.AddUserAsync(user));
         }
 
         [HttpPost("[controller]")]
-        [AuthorizedAction(new [] {Actions.EditUsers})]
+        [AuthorizedAction(Actions.EditUsers)]
         public async Task<IActionResult> EditUserAsync(PutUser user)
         {
             await UserService.EditUserAsync(user);
@@ -113,7 +113,7 @@ namespace Merwylan.ExampleApi.Api.Controllers
         }
 
         [HttpDelete("[controller]/{id}")]
-        [AuthorizedAction(new [] {Actions.DeleteUsers})]
+        [AuthorizedAction(Actions.DeleteUsers)]
         public async Task<IActionResult> DeleteUserByIdAsync(int id)
         {
             await UserService.DeleteUserAsync(id);
@@ -121,7 +121,7 @@ namespace Merwylan.ExampleApi.Api.Controllers
         }
 
         [HttpGet("actions")]
-        [AuthorizedAction(new [] {Actions.ViewActions})]
+        [AuthorizedAction(Actions.ViewActions)]
         public IActionResult GetAllActions()
         {
             return Ok(UserService.GetActions());
@@ -129,7 +129,7 @@ namespace Merwylan.ExampleApi.Api.Controllers
 
         
         [HttpGet("[controller]/{id}/refresh-tokens")]
-        [AuthorizedAction(new [] {Actions.ViewTokens})]
+        [AuthorizedAction(Actions.ViewTokens)]
         public IActionResult GetRefreshTokensById(int id)
         {
             var user = UserService.GetUserById(id);

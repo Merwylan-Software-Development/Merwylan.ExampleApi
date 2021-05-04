@@ -21,6 +21,7 @@ namespace Merwylan.ExampleApi.Audit
         public IEnumerable<AuditGetModel> GetAuditModels(AuditSearchModel search)
         {
             return _auditRepository.Get()
+                .Where(x => search.Method == null || x.Method == search.Method)
                 .Where(x => search.Endpoint == null || x.Endpoint == search.Endpoint)
                 .Where(x => search.IsSuccessful == null || x.IsSuccessful == search.IsSuccessful)
                 .Where(x => search.StatusCode == null || x.StatusCode == search.StatusCode)
@@ -38,11 +39,9 @@ namespace Merwylan.ExampleApi.Audit
                 });
         }
 
-        public async Task<bool> AddAuditTrailAsync(AuditPostModel model)
+        public async Task<AuditTrail> AddAuditTrailAsync(AuditPostModel model)
         {
-            try
-            {
-                await _auditRepository.AddAuditTrailAsync(new AuditTrail
+            var addedTrail = await _auditRepository.AddAuditTrailAsync(new AuditTrail
                 {
                     Id = Guid.NewGuid(),
                     Occurred = DateTime.Now,
@@ -54,13 +53,7 @@ namespace Merwylan.ExampleApi.Audit
                 });
 
                 await _auditRepository.SaveAsync();
-
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
+                return addedTrail;
         }
     }
 }

@@ -165,7 +165,6 @@ namespace Merwylan.ExampleApi.Services
 
             if (!refreshToken.IsActive) throw new RefreshTokenNotFoundException();
 
-            // Create new token
             var newRefreshToken = GenerateRefreshToken(ipAddress);
             user.RefreshTokens.Add(newRefreshToken);
 
@@ -174,7 +173,6 @@ namespace Merwylan.ExampleApi.Services
             refreshToken.RevokedByIp = ipAddress;
             refreshToken.ReplacedByToken = newRefreshToken.Token;
 
-            // Update the user
             _userRepository.UpdateUser(user);
 
             var jwtToken = GenerateJwtToken(user); 

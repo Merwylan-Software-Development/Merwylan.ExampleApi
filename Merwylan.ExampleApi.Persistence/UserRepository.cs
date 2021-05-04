@@ -30,7 +30,10 @@ namespace Merwylan.ExampleApi.Persistence
 
         public User? GetUserByName(string userName)
         {
-            return _context.Users.FirstOrDefault(user => user.Username == userName);
+            return _context.Users
+                .Include(x => x.Roles)
+                .ThenInclude(x => x.Actions)
+                .FirstOrDefault(user => user.Username == userName);
         }
 
         public User? GetUserByRefreshToken(string refreshToken)

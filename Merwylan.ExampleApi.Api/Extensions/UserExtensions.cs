@@ -8,7 +8,7 @@ namespace Merwylan.ExampleApi.Api.Extensions
 {
     public static class UserExtensions
     {
-        public static bool HasClaim(this UserDto user, Actions action)
+        public static bool HasAction(this UserDto user, Actions action)
         {
             return user.Roles.Any(x => x.Actions.Any(y => y.Id == (int)action));
         }

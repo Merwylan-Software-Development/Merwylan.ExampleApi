@@ -60,14 +60,8 @@ namespace Merwylan.ExampleApi.Api.Middleware
                     ? null : await GetRequestAsync(context),
             };
 
-            if (!await auditService.AddAuditTrailAsync(auditModel))
-            {
-                _logger.LogError($"Failed to audit model {auditModel.SerializeCamelCase()}.");
-            }
-            else
-            {
-                _logger.LogInformation($"Successfully audited model {auditModel.SerializeCamelCase()}.");
-            }
+            _logger.LogInformation($"Attempting to audit model {auditModel.SerializeCamelCase()}.");
+            await auditService.AddAuditTrailAsync(auditModel);
         }
 
         private async Task<string> GetRequestAsync(HttpContext context)

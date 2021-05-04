@@ -3,7 +3,5 @@
     public interface IMailService
     {
         void SendMail(MailModel model);
-
-        void FireAndForgetMail(MailModel model);
     }
 }

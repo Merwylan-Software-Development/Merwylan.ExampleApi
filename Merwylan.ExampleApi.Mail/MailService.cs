@@ -23,12 +23,12 @@ namespace Merwylan.ExampleApi.Mail
             _recipients = config.Recipients;
         }
 
-        public void FireAndForgetMail(MailModel model)
+        public void SendMail(MailModel model)
         {
-            BackgroundJob.Enqueue(() => SendMail(model));
+            BackgroundJob.Enqueue(() => Send(model));
         }
 
-        public void SendMail(MailModel model)
+        private void Send(MailModel model)
         {
             var recipients = _recipients.Split(";").ToList();
             recipients.AddRange(model.ExtraRecipients);

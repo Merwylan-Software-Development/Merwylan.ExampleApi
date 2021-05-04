@@ -18,10 +18,10 @@ namespace Merwylan.ExampleApi.Api.Attributes
 {
     public class AuthorizedActionFilter : IAuthorizationFilter
     {
-        private Actions[] _actions;
-        public AuthorizedActionFilter(Actions[] actions)
+        private Actions _action;
+        public AuthorizedActionFilter(Actions action)
         {
-            _actions = actions ?? throw new ArgumentNullException(nameof(_actions), @"Please provide a non-empty action value.");
+            _action = action;
         }
 
         public void OnAuthorization(AuthorizationFilterContext context)
@@ -41,7 +41,7 @@ namespace Merwylan.ExampleApi.Api.Attributes
         {
             var user = GetUser(context.HttpContext);
             var authorizedActions = user.Roles.SelectMany(x => x.Actions).Select(x=> x.Id);
-            return _actions.All(action => authorizedActions.Contains((int)action));
+            return authorizedActions.Contains((int)_action);
         }
 
         private UserDto GetUser(HttpContext context)
